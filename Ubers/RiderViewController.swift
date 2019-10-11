@@ -57,7 +57,6 @@ class RiderViewController: UIViewController, CLLocationManagerDelegate {
     @IBAction func logoutButtonTapped(_ sender: Any) {
         try? Auth.auth().signOut()
         navigationController?.dismiss(animated: true, completion: nil)
-        
     }
     
     @IBAction func callUberButtonTapped(_ sender: Any) {
