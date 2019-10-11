@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>1059410645933-ucops513buol0p0l2jdqevoei6v4q35q.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.1059410645933-ucops513buol0p0l2jdqevoei6v4q35q</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCvI0unHSOdHPuJdVhLocU7J0VO7Bgc2oc</string>
+	<key>GCM_SENDER_ID</key>
+	<string>1059410645933</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.ariashary.Ubers</string>
+	<key>PROJECT_ID</key>
+	<string>ubers-d44b3</string>
+	<key>STORAGE_BUCKET</key>
+	<string>ubers-d44b3.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:1059410645933:ios:66ab30d30442b1631dc724</string>
+	<key>DATABASE_URL</key>
+	<string>https://ubers-d44b3.firebaseio.com</string>
+</dict>
+</plist>
