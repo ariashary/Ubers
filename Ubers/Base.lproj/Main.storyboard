@@ -24,13 +24,13 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Enter your Email" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="B4m-8l-MqQ">
+                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="rider@gmail.com" borderStyle="roundedRect" placeholder="Enter your Email" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="B4m-8l-MqQ">
                                 <rect key="frame" x="20" y="90" width="374" height="30"/>
                                 <nil key="textColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" keyboardType="emailAddress"/>
                             </textField>
-                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Enter your password" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Bpi-FM-l8M">
+                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="123456" borderStyle="roundedRect" placeholder="Enter your password" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Bpi-FM-l8M">
                                 <rect key="frame" x="20" y="128" width="374" height="30"/>
                                 <nil key="textColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -105,10 +105,78 @@
                         <outlet property="riderDriverSwitch" destination="XCu-EU-wxW" id="wia-eN-sw1"/>
                         <outlet property="riderLabel" destination="DBU-tp-np3" id="cZa-li-5EJ"/>
                         <outlet property="topButton" destination="cht-lU-1bd" id="Zos-8A-SyY"/>
+                        <segue destination="Sm1-Yu-1ho" kind="presentation" identifier="riderSegue" id="CyO-Vd-CbQ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="-242" y="77"/>
+        </scene>
+        <!--Rider View Controller-->
+        <scene sceneID="29S-aK-d2M">
+            <objects>
+                <viewController id="5N4-U1-Wbi" customClass="RiderViewController" customModule="Ubers" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="YFG-t7-0zr">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="ibN-82-baA">
+                                <rect key="frame" x="20" y="108" width="374" height="374"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="ibN-82-baA" secondAttribute="height" multiplier="1:1" id="9yM-L1-Lnv"/>
+                                </constraints>
+                            </mapView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Q9Y-Pf-r8P">
+                                <rect key="frame" x="161" y="502" width="92" height="30"/>
+                                <state key="normal" title="Call an Ubers"/>
+                                <connections>
+                                    <action selector="callUberButtonTapped:" destination="5N4-U1-Wbi" eventType="touchUpInside" id="ehl-mH-Ohs"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="Q9Y-Pf-r8P" firstAttribute="top" secondItem="ibN-82-baA" secondAttribute="bottom" constant="20" id="EPw-2I-UGA"/>
+                            <constraint firstItem="ibN-82-baA" firstAttribute="leading" secondItem="Cck-yJ-VLo" secondAttribute="leading" constant="20" id="Iaf-SY-xxL"/>
+                            <constraint firstItem="Cck-yJ-VLo" firstAttribute="trailing" secondItem="ibN-82-baA" secondAttribute="trailing" constant="20" id="oJm-ao-nE5"/>
+                            <constraint firstItem="ibN-82-baA" firstAttribute="top" secondItem="Cck-yJ-VLo" secondAttribute="top" constant="20" id="vy6-dd-2cR"/>
+                            <constraint firstItem="Q9Y-Pf-r8P" firstAttribute="centerX" secondItem="YFG-t7-0zr" secondAttribute="centerX" id="xQE-Y8-c7D"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="Cck-yJ-VLo"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="1qx-0l-64h">
+                        <barButtonItem key="leftBarButtonItem" title="Logout" id="seM-Cw-h7T">
+                            <connections>
+                                <action selector="logoutButtonTapped:" destination="5N4-U1-Wbi" id="4JP-ku-fbz"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="callAnUberButton" destination="Q9Y-Pf-r8P" id="CbZ-rE-r53"/>
+                        <outlet property="map" destination="ibN-82-baA" id="7si-TV-RTv"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="9Sb-qC-8ZU" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1457" y="76"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="2xX-Hu-tqS">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="Sm1-Yu-1ho" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="0CM-7N-OoL">
+                        <rect key="frame" x="0.0" y="44" width="414" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="5N4-U1-Wbi" kind="relationship" relationship="rootViewController" id="eFS-s7-uC9"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="DLv-Vv-yNk" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="620" y="76"/>
         </scene>
     </scenes>
 </document>
