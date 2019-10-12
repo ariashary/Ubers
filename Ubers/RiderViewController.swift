@@ -19,6 +19,8 @@ class RiderViewController: UIViewController, CLLocationManagerDelegate {
     var locationManager = CLLocationManager()
     var userLocation = CLLocationCoordinate2D()
     var ubersHasBeenCalled = false
+    var driverOnTheWay = false
+    var driverLocation = CLLocationCoordinate2D()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,24 +35,78 @@ class RiderViewController: UIViewController, CLLocationManagerDelegate {
                 self.ubersHasBeenCalled = true
                 self.callAnUberButton.setTitle("Cancel Ubers", for: .normal)
                 Database.database().reference().child("rideRequests").removeAllObservers()
+                
+                if let rideRequestDictionary = snapshot.value as? [String: AnyObject] {
+                    if let driverLat = rideRequestDictionary["driverLat"] as? Double {
+                        if let driverLon = rideRequestDictionary["driverLon"] as? Double {
+                            self.driverLocation = CLLocationCoordinate2D(latitude: driverLat, longitude: driverLon)
+                            self.driverOnTheWay = true
+                            self.displayDriverAndRider()
+                            
+                            if let email = Auth.auth().currentUser?.email {
+                                Database.database().reference().child("RideRequest").queryOrdered(byChild: "email").queryEqual(toValue: email).observe(.childChanged) { (snapshot) in
+                                    if let rideRequestDictionary = snapshot.value as? [String: AnyObject] {
+                                        if let driverLat = rideRequestDictionary["driverLat"] as? Double {
+                                            if let driverLon = rideRequestDictionary["driverLon"] as? Double {
+                                                self.driverLocation = CLLocationCoordinate2D(latitude: driverLat, longitude: driverLon)
+                                                self.driverOnTheWay = true
+                                                self.displayDriverAndRider()
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
+    }
+    
+    func displayDriverAndRider() {
+        let driverCLLocation = CLLocation(latitude: driverLocation.latitude, longitude: driverLocation.longitude)
+        let riderCLLocation = CLLocation(latitude: userLocation.latitude, longitude: userLocation.longitude)
+        let distance = driverCLLocation.distance(from: riderCLLocation) / 1000
+        let rounderDistance = round(distance * 100) / 100
+        callAnUberButton.setTitle("Your driver is \(rounderDistance)km away!", for: .normal)
+        map.removeAnnotations(map.annotations)
+        
+        let latDelta = abs(driverLocation.latitude - userLocation.latitude) * 2 + 0.005
+        let lonDelta = abs(driverLocation.longitude - userLocation.longitude) * 2 + 0.005
+        
+        let region = MKCoordinateRegion(center: userLocation, span: MKCoordinateSpan(latitudeDelta: latDelta, longitudeDelta: lonDelta))
+        map.setRegion(region, animated: true)
+        
+        let riderAnno = MKPointAnnotation()
+        riderAnno.coordinate = userLocation
+        riderAnno.title = "Your Location"
+        map.addAnnotation(riderAnno)
+        
+        let driverAnno = MKPointAnnotation()
+        driverAnno.coordinate = driverLocation
+        driverAnno.title = "Driver Location"
+        map.addAnnotation(driverAnno)
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if let coordinate = manager.location?.coordinate {
             let center = CLLocationCoordinate2D(latitude: coordinate.latitude, longitude: coordinate.longitude)
-            let region = MKCoordinateRegion(center: center, span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
-            
             userLocation = center
             
-            map.setRegion(region, animated: true)
-            map.removeAnnotations(map.annotations)
-            
-            let anotation = MKPointAnnotation()
-            anotation.coordinate = center
-            anotation.title = "Your Location"
-            map.addAnnotation(anotation)
+            if ubersHasBeenCalled {
+                displayDriverAndRider()
+                
+            } else {
+                let region = MKCoordinateRegion(center: center, span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01))
+                
+                map.setRegion(region, animated: true)
+                map.removeAnnotations(map.annotations)
+                
+                let anotation = MKPointAnnotation()
+                anotation.coordinate = center
+                anotation.title = "Your Location"
+                map.addAnnotation(anotation)
+            }
         }
     }
     
@@ -60,19 +116,21 @@ class RiderViewController: UIViewController, CLLocationManagerDelegate {
     }
     
     @IBAction func callUberButtonTapped(_ sender: Any) {
-        if let email = Auth.auth().currentUser?.email {
-            if ubersHasBeenCalled {
-                ubersHasBeenCalled = false
-                callAnUberButton.setTitle("Call an Ubers", for: .normal)
-                Database.database().reference().child("rideRequests").queryOrdered(byChild: "email").queryEqual(toValue: email).observe(.childAdded) { (snapshot) in
-                    snapshot.ref.removeValue()
-                Database.database().reference().child("rideRequests").removeAllObservers()
+        if !driverOnTheWay {
+            if let email = Auth.auth().currentUser?.email {
+                if ubersHasBeenCalled {
+                    ubersHasBeenCalled = false
+                    callAnUberButton.setTitle("Call an Ubers", for: .normal)
+                    Database.database().reference().child("rideRequests").queryOrdered(byChild: "email").queryEqual(toValue: email).observe(.childAdded) { (snapshot) in
+                        snapshot.ref.removeValue()
+                        Database.database().reference().child("rideRequests").removeAllObservers()
+                    }
+                } else {
+                    let rideRequestDictionary: [String: Any] = ["email": email, "lat": userLocation.latitude, "lon": userLocation.longitude]
+                    Database.database().reference().child("rideRequests").childByAutoId().setValue(rideRequestDictionary)
+                    ubersHasBeenCalled = true
+                    callAnUberButton.setTitle("Cancel Ubers", for: .normal)
                 }
-            } else {
-                let rideRequestDictionary: [String: Any] = ["email": email, "lat": userLocation.latitude, "lon": userLocation.longitude]
-                Database.database().reference().child("rideRequests").childByAutoId().setValue(rideRequestDictionary)
-                ubersHasBeenCalled = true
-                callAnUberButton.setTitle("Cancel Ubers", for: .normal)
             }
         }
     }
